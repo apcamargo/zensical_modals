@@ -1,0 +1,249 @@
+.md-typeset .modal-trigger {
+  background: none;
+  border: 0;
+  color: var(--md-accent-fg-color);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 0;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.md-typeset .modal-trigger:hover {
+  opacity: 0.75;
+}
+
+.md-typeset .modal-trigger:focus-visible {
+  outline: 0.12rem solid var(--md-accent-fg-color);
+  outline-offset: 0.12rem;
+}
+
+.md-typeset .modal {
+  align-items: center;
+  background: none;
+  border: 0;
+  display: none;
+  height: 100%;
+  justify-content: center;
+  max-height: none;
+  max-width: none;
+  padding: 0;
+  width: 100%;
+}
+
+.md-typeset .modal[open] {
+  display: flex;
+}
+
+.md-typeset .modal::backdrop {
+  background: none;
+}
+
+/* Opaque panels have nothing behind them to blur, so the filter is dropped
+   along with the translucent background. */
+.md-typeset .modal--opaque .modal__surface {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-color: rgb(var(--color-background));
+}
+
+/* Mirrors the search dialog backdrop (`.p`). A real element, not `::backdrop`,
+   because `::backdrop` can't outlive `dialog.close()` to finish a fade. */
+.md-typeset .modal__backdrop {
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  background-color: rgb(var(--color-backdrop) / 0.54);
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: fixed;
+  transition: opacity 0.35s;
+  /* The theme reserves a scrollbar gutter (`html { scrollbar-gutter: stable }`),
+     so a plain `inset: 0` box is narrower than the viewport. `100vw` (safe
+     because the theme also sets `overflow-x: hidden`) widens it to cover the
+     gutter without shifting position. */
+  width: 100vw;
+}
+
+.md-typeset .modal[open] .modal__backdrop {
+  opacity: 1;
+  transition: opacity 0.25s;
+}
+
+@starting-style {
+  .md-typeset .modal[open] .modal__backdrop {
+    opacity: 0;
+  }
+}
+
+.md-typeset .modal[open].modal--closing .modal__backdrop {
+  opacity: 0;
+  transition: opacity 0.35s;
+}
+
+/* Mirrors the search dialog panel (`.l`). Holds every paint property
+   stripped off `.modal` above, so tearing the dialog down on `close()`
+   leaves nothing composited in the top layer — which is what caused the
+   close-flicker this replaces. */
+.md-typeset .modal__surface {
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  background-color: rgb(var(--color-background) / 0.7);
+  border: 1px solid rgb(var(--color-foreground) / 0.07);
+  border-radius: 16px;
+  box-shadow: 0 0 60px #0000000d;
+  color: var(--md-default-fg-color);
+  display: flex;
+  flex-direction: column;
+  max-height: var(--modal-max-height, min(90vh, 40rem));
+  max-width: 92vw;
+  min-height: var(--modal-min-height, auto);
+  opacity: 0;
+  /* Positioning context for `.modal--no-header .modal__close`, now that the
+     dialog itself is a full-viewport shell instead of the visual panel. */
+  position: relative;
+  transform: scale(1.1);
+  transition: transform 0.25s 0.15s, opacity 0.15s;
+  width: var(--modal-width);
+}
+
+.md-typeset .modal[open] .modal__surface {
+  opacity: 1;
+  transform: scale(1);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s;
+}
+
+@starting-style {
+  .md-typeset .modal[open] .modal__surface {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+}
+
+.md-typeset .modal[open].modal--closing .modal__surface {
+  opacity: 0;
+  transform: scale(1.1);
+  transition: transform 0.25s 0.15s, opacity 0.15s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .md-typeset .modal__backdrop,
+  .md-typeset .modal__surface,
+  .md-typeset .modal[open] .modal__backdrop,
+  .md-typeset .modal[open] .modal__surface,
+  .md-typeset .modal[open].modal--closing .modal__backdrop,
+  .md-typeset .modal[open].modal--closing .modal__surface {
+    transition-duration: 0s;
+    transition-delay: 0s;
+  }
+}
+
+/* Mirrors the search dialog header (`.k`). */
+.md-typeset .modal__header {
+  align-items: center;
+  border-bottom: 1px solid rgb(var(--color-foreground) / 0.07);
+  display: flex;
+  flex: none;
+  gap: 4px;
+  justify-content: space-between;
+  padding: 8px;
+}
+
+.md-typeset .modal__header h3 {
+  font-size: 0.8rem;
+  margin: 0;
+  min-width: 0;
+  padding: 0 0.4rem;
+}
+
+.md-typeset .modal__close {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  color: var(--md-default-fg-color--light);
+  cursor: pointer;
+  display: flex;
+  flex: none;
+  height: 36px;
+  justify-content: center;
+  margin: 0;
+  outline: none;
+  padding: 0;
+  position: relative;
+  transition: color 0.25s;
+  width: 36px;
+  z-index: 1;
+}
+
+.md-typeset .modal__close svg {
+  height: 18px;
+  width: 18px;
+}
+
+.md-typeset .modal__close::before {
+  background-color: rgb(var(--color-background-subtle));
+  border-radius: 8px;
+  content: "";
+  inset: 0;
+  opacity: 0;
+  position: absolute;
+  transform: scale(0.75);
+  transition: transform 125ms, opacity 125ms;
+  z-index: -1;
+}
+
+.md-typeset .modal__close:hover,
+.md-typeset .modal__close:focus-visible {
+  color: var(--md-default-fg-color);
+}
+
+.md-typeset .modal__close:hover::before,
+.md-typeset .modal__close:focus-visible::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.md-typeset .modal__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 0.8rem 1.2rem 1.2rem;
+}
+
+/* Headerless dialogs float the close button over the body instead. */
+.md-typeset .modal--no-header .modal__close {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  z-index: 1;
+}
+
+.md-typeset .modal--no-header .modal__body {
+  padding-top: 2.8rem;
+}
+
+.md-typeset .modal__body > :first-child {
+  margin-top: 0;
+}
+
+@media screen and (max-width: 680px) {
+  .md-typeset .modal__surface {
+    border: 0;
+    border-radius: 0;
+    height: 100dvh;
+    max-height: 100dvh;
+    max-width: 100vw;
+    width: 100vw;
+  }
+
+  .md-typeset .modal__header,
+  .md-typeset .modal__body {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}

@@ -1,0 +1,31 @@
+[project]
+site_name = "Zensical modals"
+site_url = "https://apcamargo.github.io/zensical_modals"
+repo_name = "apcamargo/zensical_modals"
+nav = ["index.md"]
+extra_css = ["stylesheets/extra.css"]
+extra_javascript = [
+  { path = "javascripts/modal.js", type = "module" },
+]
+
+[project.markdown_extensions.zensical.extensions.macros]
+module_name = "docs/scripts/docs_macros"
+on_error_fail = true
+on_undefined = "strict"
+
+[project.markdown_extensions."pymdownx.superfences"]
+
+[project.theme]
+language = "en"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "green"
+accent = "green"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "black"
+accent = "green"
