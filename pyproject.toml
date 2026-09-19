@@ -1,0 +1,16 @@
+[build-system]
+requires = ["uv_build>=0.12.17,<0.13"]
+build-backend = "uv_build"
+
+[project]
+name = "zensical-modals"
+version = "0.1.0"
+description = "Markdown-authored modal blocks for Zensical"
+requires-python = ">=3.10"
+dependencies = [
+  "pymdown-extensions>=12.0",
+  "zensical>=0.0.62",
+]
+
+[tool.uv.build-backend]
+module-name = "modal_block"

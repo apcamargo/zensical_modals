@@ -8,10 +8,11 @@ extra_javascript = [
   { path = "javascripts/modal.js", type = "module" },
 ]
 
-[project.markdown_extensions.zensical.extensions.macros]
-module_name = "docs/scripts/docs_macros"
-on_error_fail = true
-on_undefined = "strict"
+[project.markdown_extensions]
+attr_list = {}
+md_in_html = {}
+modal_block = {}
+pymdownx.bracketspan = {}
 
 [project.markdown_extensions."pymdownx.superfences"]
 
@@ -19,13 +20,22 @@ on_undefined = "strict"
 language = "en"
 
 [[project.theme.palette]]
+media = "(prefers-color-scheme)"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "Switch to light mode"
+
+[[project.theme.palette]]
 media = "(prefers-color-scheme: light)"
 scheme = "default"
 primary = "green"
 accent = "green"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
 
 [[project.theme.palette]]
 media = "(prefers-color-scheme: dark)"
 scheme = "slate"
 primary = "black"
 accent = "green"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to system preference"

@@ -2,40 +2,154 @@
 
 ## Writing a modal
 
-A modal is created with the `modal()` macro (defined in `docs/scripts/docs_macros.py`). It renders a trigger `<button>` plus the `<dialog>` element it opens:
+A modal has two parts: a PyMdown [BracketSpan](https://facelessuser.github.io/pymdown-extensions/extensions/bracketspan/) trigger in the prose and a `modal` [Block](https://facelessuser.github.io/pymdown-extensions/extensions/blocks/) that defines the dialog.
 
-{% raw %}```
-{{ modal(
-    label="Example modal",
-    modal_id="example-modal",
-    title=None,
-    body="<p>Any HTML string.</p>",
-    min_height=None,
-    max_height=None,
-) }}
-```{% endraw %}
+````md
+This [modal]{modal="my-modal"} uses default parameters and shows a title and
+a Markdown body.
 
-- `label`: the trigger button's label.
-- `modal_id`: the `<dialog>` element's `id`. Must be unique per page.
-- `title`: the modal's header. Leave it as `None` (the default) for a headerless modal.
-- `body`: the modal's content in raw HTML.
-- `min_height` / `max_height`: CSS length values (e.g. `"20rem"`) that override the modal's default height bounds.
-- `transparent`: defaults to `True`, giving the panel a translucent, blurred background. Set it to `False` for an opaque panel.
+/// modal | My modal
+    key: my-modal
+
+The dialog body supports the same Markdown syntax used in the surrounding content,
+such as **bold** and *italicized* text, inline `code`, lists, and tables.
+
+- Multiple paragraphs
+- Tables
+- Highlighted code blocks
+
+| Content     | Supported |
+|-------------|-----------|
+| Lists       | Yes       |
+| Tables      | Yes       |
+| Code blocks | Yes       |
+
+```python
+print("This is highlighted inside the modal.")
+```
+///
+````
+
+<div class="result" markdown>
+
+This [modal]{modal="my-modal"} uses default parameters and shows a title and
+a Markdown body.
+
+/// modal | My modal
+    key: my-modal
+
+The dialog body supports the same Markdown syntax used in the surrounding content,
+such as **bold** and *italicized* text, inline `code`, lists, and tables.
+
+- Multiple paragraphs
+- Tables
+- Highlighted code blocks
+
+| Content     | Supported |
+|-------------|-----------|
+| Lists       | Yes       |
+| Tables      | Yes       |
+| Code blocks | Yes       |
+
+```python
+print("This is highlighted inside the modal.")
+```
+///
+
+</div>
+
+The `key` option is required and must be unique among modal Blocks on its page.
+Any number of BracketSpan triggers can use the same key. The title after `|` is
+also required: it is shown in the dialog header and supplies its accessible name.
+
+- `omit-header: true` hides the visible header while preserving the title as the
+  dialog's accessible name.
+- `min-height` / `max-height` accept CSS length values such as `20rem`.
+- `opaque: true` gives the panel a solid background instead of the default
+  translucent, blurred surface.
+
+The Block body is Markdown, so it can contain paragraphs, lists, code blocks,
+and raw HTML. A normal triple-backtick code block can appear directly inside a
+modal. Use a longer slash fence only when nesting another Block.
 
 ## Examples
 
-### Default
+### Headerless
 
-{{ modal(body="<p>Modal with default parameters.</p><pre><code>{{ modal() }}</code></pre>") }}
+````md
+Open the [headerless modal]{modal="headerless-modal"}.
 
-### With a header
+/// modal | Headerless modal
+    key: headerless-modal
+    omit-header: true
 
-{{ modal(label="Modal with a header", modal_id="header-modal", title="Modal with a header", body="<p>Passing <code>title</code> gives the modal a header bar with that title and a close button, instead of the default headerless layout.</p><pre><code>{{ modal(label=&quot;Modal with a header&quot;, modal_id=&quot;header-modal&quot;, title=&quot;Modal with a header&quot;) }}</code></pre>") }}
+The title remains available to assistive technology, but no header bar is
+shown.
+///
+````
+
+<div class="result" markdown>
+
+Open the [headerless modal]{modal="headerless-modal"}.
+
+/// modal | Headerless modal
+    key: headerless-modal
+    omit-header: true
+
+The title remains available to assistive technology, but no header bar is
+shown.
+///
+
+</div>
 
 ### Custom height bounds
 
-{{ modal(label="Minimum height", modal_id="min-height-modal", title="Minimum height", min_height="30rem", body="<p><code>min_height</code> sets a floor on the modal&#x27;s height, so it stays tall even when its content is short.</p><pre><code>{{ modal(label=&quot;Minimum height&quot;, modal_id=&quot;min-height-modal&quot;, title=&quot;Minimum height&quot;, min_height=&quot;30rem&quot;) }}</code></pre>") }}
+````md
+Open the [minimum-height modal]{modal="min-height-modal"}.
+
+/// modal | Minimum height
+    key: min-height-modal
+    min-height: 30rem
+
+`min-height` keeps this dialog tall even when its content is short.
+///
+````
+
+<div class="result" markdown>
+
+Open the [minimum-height modal]{modal="min-height-modal"}.
+
+/// modal | Minimum height
+    key: min-height-modal
+    min-height: 30rem
+
+`min-height` keeps this dialog tall even when its content is short.
+///
+
+</div>
 
 ### Opaque background
 
-{{ modal(label="Opaque modal", modal_id="opaque-modal", title="Opaque modal", transparent=False, body="<p>Setting <code>transparent</code> to <code>False</code> gives the panel a solid background instead of the default translucent, blurred one.</p><pre><code>{{ modal(label=&quot;Opaque modal&quot;, modal_id=&quot;opaque-modal&quot;, title=&quot;Opaque modal&quot;, transparent=False) }}</code></pre>") }}
+````md
+Open the [opaque modal]{modal="opaque-modal"}.
+
+/// modal | Opaque modal
+    key: opaque-modal
+    opaque: true
+
+`opaque` disables the translucent, blurred panel background.
+///
+````
+
+<div class="result" markdown>
+
+Open the [opaque modal]{modal="opaque-modal"}.
+
+/// modal | Opaque modal
+    key: opaque-modal
+    opaque: true
+
+`opaque` disables the translucent, blurred panel background.
+///
+
+</div>

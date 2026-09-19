@@ -20,8 +20,11 @@ document.fonts.ready.then(measureContentWidth);
 
 const CLOSING_CLASS = "modal--closing";
 
-function openDialog(dialog) {
-  dialog.showModal();
+const openers = new WeakMap();
+
+function openDialog(dialog, opener) {
+  openers.set(dialog, opener);
+  if (!dialog.open) dialog.showModal();
 }
 
 async function closeDialog(dialog) {
@@ -36,21 +39,39 @@ async function closeDialog(dialog) {
   dialog.close();
 }
 
+function prepareTrigger(trigger, dialog) {
+  trigger.classList.add("modal-trigger");
+  trigger.setAttribute("role", "button");
+  trigger.setAttribute("tabindex", "0");
+  trigger.setAttribute("aria-haspopup", "dialog");
+
+  trigger.addEventListener("click", () => openDialog(dialog, trigger));
+  trigger.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    openDialog(dialog, trigger);
+  });
+}
+
 document$.subscribe(({ body }) => {
   measureContentWidth();
 
-  for (const trigger of body.querySelectorAll("[data-modal]")) {
-    const dialogId = trigger.dataset.modal;
-    const dialog = dialogId ? body.querySelector(`#${dialogId}`) : null;
+  const dialogsByKey = new Map();
 
-    if (!(dialog instanceof HTMLDialogElement)) continue;
-
-    trigger.addEventListener("click", () => openDialog(dialog));
-    dialog.addEventListener("close", () => trigger.focus({ preventScroll: true }));
+  for (const dialog of body.querySelectorAll(".modal[modal]")) {
+    dialogsByKey.set(dialog.getAttribute("modal"), dialog);
+    dialog.addEventListener("close", () => {
+      openers.get(dialog)?.focus({ preventScroll: true });
+    });
     dialog.addEventListener("cancel", (event) => {
       event.preventDefault();
       closeDialog(dialog);
     });
+  }
+
+  for (const trigger of body.querySelectorAll("span[modal]")) {
+    const dialog = dialogsByKey.get(trigger.getAttribute("modal"));
+    if (dialog) prepareTrigger(trigger, dialog);
   }
 
   for (const closeButton of body.querySelectorAll("[data-modal-close]")) {
