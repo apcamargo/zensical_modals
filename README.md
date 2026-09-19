@@ -15,13 +15,28 @@ Write the clickable text naturally in the surrounding prose, and associate it
 with a modal-only key:
 
 ````markdown
-Need more detail? Read the [privacy policy]{modal="privacy-policy"}.
+This [modal]{modal="my-modal"} uses default parameters and shows a title and
+a Markdown body.
 
-/// modal | Privacy policy
-    key: privacy-policy
-    opaque: true
+/// modal | My modal
+    key: my-modal
 
-The dialog body is regular **Markdown**, not an escaped HTML string.
+The dialog body supports the same Markdown syntax used in the surrounding content,
+such as **bold** and *italicized* text, inline `code`, lists, and tables.
+
+- Multiple paragraphs
+- Tables
+- Highlighted code blocks
+
+| Content     | Supported |
+|-------------|-----------|
+| Lists       | Yes       |
+| Tables      | Yes       |
+| Code blocks | Yes       |
+
+```python
+print("This is highlighted inside the modal.")
+```
 ///
 ````
 
